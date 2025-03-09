@@ -14,6 +14,7 @@ namespace DungeonExplorer
             Name = name;
             Health = health;
         }
+        //This object makes parameters based off variables to organise the player and their health
 
         public Player(string v)
         {
@@ -24,6 +25,7 @@ namespace DungeonExplorer
         {
             inventory.Add(item);
         }
+        //This object allows the player to pick up an item and store it within their inventory
         public string InventoryContents()
         {
             if (inventory.Count == 0)
@@ -32,5 +34,6 @@ namespace DungeonExplorer
             }
             return string.Join(", ", inventory);
         }
+        //This object store information relating to the players inventory
     }
 }
