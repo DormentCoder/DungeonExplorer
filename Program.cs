@@ -13,5 +13,6 @@ namespace DungeonExplorer
             Game game = new Game();
             game.Start();
         }
+        //This code allows for the program to start
     }
 }

@@ -80,6 +80,9 @@ namespace DungeonExplorer
                         playing = false;
                         Console.WriteLine("Exiting game...");
                         break;
+                    case "debug":
+                        Testing.RunTests(player, currentRoom);
+                        break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
@@ -101,6 +104,19 @@ namespace DungeonExplorer
                 return false;
             }
             //This is the ending clause which checks if the player has a key in their inventory which will allow them to get an ending
+        }
+    }
+    internal static class Testing
+    {
+        public static void RunTests(Player player, Room room)
+        {
+            Debug.Assert(player != null, "Error: Player object should not be null");
+            Debug.Assert(room != null, "Error: Room object should not be null");
+            Debug.Assert(player.Health > 0, "Error: Player health should be greater than 0");
+            Debug.Assert(player.Health < 101, "Error: Player health should not exceed its cap");
+            Debug.Assert(!string.IsNullOrEmpty(room.GetDescription()), "Error: Room description should not be empty");
+
+            Console.WriteLine("All tests passed.");
         }
     }
 }
