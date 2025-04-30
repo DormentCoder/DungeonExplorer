@@ -40,7 +40,7 @@ namespace DungeonExplorer
                 case 5:
                     return new Room("An exit room with a locked door. You presume that you need a key to escape.");
                 case 6:
-                    return new Room("A hospital room with shelves of empth bottles, presumably health potions. You wonder if there is actually spare potions available.");
+                    return new Room("A hospital room with shelves of empty bottles, presumably health potions. You wonder if there is actually spare potions available.");
                 case 7:
                     return new Room("A room with a skeleton standing in the corner, its hollow eyes stares at you as it walks towards you.");
                 case 8:

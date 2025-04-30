@@ -54,12 +54,12 @@ namespace DungeonExplorer
 
         public void PickUpItem(string item)
         {
-            if (inventory.Contains(item))
+            if (item.ToLower() != "health potions" && inventory.Contains(item))
             {
-                // Refuse the action and display a message
                 Console.WriteLine($"You already have {item} in your inventory. You cannot pick it up again.");
                 return;
             }
+            //If there is a duplicate item in the inventory then the player will be notified that they cannot pick it up again, unless the item is health potions. If so, then this script will be skipped entirely
             inventory.Add(item);
             if (item.ToLower() == "health potions")
             {
@@ -85,8 +85,9 @@ namespace DungeonExplorer
         }
         public void setHealth(int health)
         {
-            Health = health;
+            Health = Math.Min(100, health);
         }
+        //Ensures that the players health is capped at 100
         public void UseHealthPotion()
         {
             if (healthPotionCount > 0)

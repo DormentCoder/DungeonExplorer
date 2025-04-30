@@ -48,14 +48,13 @@ namespace DungeonExplorer
                             Console.WriteLine("There are no more items left in this room.");
                             break;
                         }
-                        string[] items = { "armour", "cap", "sword", "axe", "key", "health potions" };
+                        string[] items = {"armour", "cap", "sword", "axe", "key", "health potions"};
                         string randomItem = items[random.Next(items.Length)];
                         Console.WriteLine($"Looking around the room, you see a {randomItem}. Would you like to pick it up? (y/n)");
                         string pickUpChoice = Console.ReadLine();
                         if (pickUpChoice.ToLower() == "y")
                         {
                             player.PickUpItem(randomItem);
-                            Console.WriteLine($"You picked up {randomItem}.");
                             currentRoom.ItemPickedUp = true;
                         }
                         else
@@ -105,11 +104,15 @@ namespace DungeonExplorer
             Console.WriteLine(currentRoom.GetDescription());
             //This is the logic that allows the player to move to the next room, the room is randomly generated and the description is outputted to the user, the user still has the option to check the room description again
 
+            int roomCounter = RoomList.RoomCounter;
+
             if (nextRoomId == 5)
             {
                 if (player.InventoryContents().Contains("key"))
                 {
                     Console.WriteLine("You use the key to unlock the door and escape the dungeon!");
+                    Console.WriteLine("Press Enter to Quit the game.");
+                    Console.ReadLine();
                     Environment.Exit(0);
                 }
                 else
@@ -124,7 +127,6 @@ namespace DungeonExplorer
                 Console.WriteLine("Prepare for battle...");
                 CombatMenu("Zombie");
             }
-            int roomCounter = RoomList.RoomCounter;
 
             if (nextRoomId == 7)
             {
@@ -141,7 +143,7 @@ namespace DungeonExplorer
 
             if (roomCounter == 5)
             {
-                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure..."); // Dialogue for room counter 5
+                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure...");
             }
             else if (roomCounter == 10)
             {
@@ -267,6 +269,7 @@ namespace DungeonExplorer
                     if (player.Health <= 0)
                     {
                         Console.WriteLine("You have been defeated! Game over.");
+                        Console.ReadLine();
                         Environment.Exit(0);
                     }
                     //This checks if the player has been defeated, if so, the game will end
