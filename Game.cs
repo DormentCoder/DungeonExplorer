@@ -12,11 +12,11 @@ namespace DungeonExplorer
 
         public Game()
         { 
-            player = new Player("PlayerName", 100); 
+            player = new Player("Player", 100); 
             currentRoom = new Room("This is an empty cell, only containing yourself.");
             random = new Random();
             Console.WriteLine("Welcome to Dungeon Explorer!");
-            Console.WriteLine("You have been captured and thrown into a dungeon. Instruct yourself on ways to escape, fellow hero!");
+            Console.WriteLine("You have been captured and thrown into a dungeon. Find a way to escape, fellow hero!");
         }
         // This is the startup message that the user will see when they start the game
         public object Start()
@@ -141,46 +141,65 @@ namespace DungeonExplorer
 
             if (roomCounter == 5)
             {
-                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure..."); // Dialogue for room counter 5
+                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure..."); 
             }
             else if (roomCounter == 10)
             {
-                Console.WriteLine("You are definitely sure that there is something up with this dungeon, you swear that the rooms loop."); // Dialogue for room counter 10
+                Console.WriteLine("You are definitely sure that there is something up with this dungeon, you swear that the rooms loop."); 
             }
             else if (roomCounter == 15)
             {
-                Console.WriteLine("At this point, you can definitely confirm that the rooms are infact looping. You need to get out of here."); // Dialogue for room counter 15
+                Console.WriteLine("At this point, you can definitely confirm that the rooms are infact looping. You need to get out of here."); 
             }
             //Statements regarding the amount of rooms the player has been through, this is used to add more narrative to the game, emphesising the endlessness the game can have
         }
+        
+        public class Enemies : Entities
+        {
+            public Enemies(string name, int health, int minAttack, int maxAttack)
+            {
+                Name = name;
+                Health = health;
+                MinAttack = minAttack;
+                MaxAttack = maxAttack;
+            }
+
+            public override void TakeDamage(int damage)
+            {
+                Health = Math.Max(0, Health - damage);
+                Console.WriteLine($"{Name} takes {damage} damage! Remaining health: {Health}");
+            }
+
+            public int Attack()
+            {
+                return CalculateDamage();
+            }
+        }
         public void CombatMenu(string enemyName)
         {
-            int enemyHealth = 0;
-            int enemyMinAttack = 0;
-            int enemyMaxAttack = 0;
+            Enemies enemy = null;
 
             switch (enemyName.ToLower())
             {
                 case "zombie":
-                    enemyHealth = 20;
-                    enemyMinAttack = 1;
-                    enemyMaxAttack = 8;
+                    enemy = new Enemies("Zombie", 20, 1, 8);
                     break;
                 case "skeleton":
-                    enemyHealth = 30;
-                    enemyMinAttack = 3;
-                    enemyMaxAttack = 6;
+                    enemy = new Enemies("Skeleton", 30, 3, 6);
                     break;
                 case "dragon":
-                    enemyHealth = 100;
-                    enemyMinAttack = 10;
-                    enemyMaxAttack = 20;
+                    enemy = new Enemies("Dragon", 100, 10, 20);
                     break;
-                //Stats for each possible enemy type
+                    //Stats for each possible enemy type
+            }
+
+            if (enemy == null)
+            {
+                Console.WriteLine("Error, enemy load error.");
+                return;
             }
 
             bool inCombat = true;
-            Random random = new Random();
 
             Console.WriteLine($"You are now in combat with {enemyName}.");
             //Instanciates starting logic to the player that the combat menu will show
@@ -196,9 +215,14 @@ namespace DungeonExplorer
                 switch (choice)
                 {
                     case "1":
-                        int playerDamage = random.Next(player.MinAttack, player.MaxAttack + 1);
-                        enemyHealth -= playerDamage;
-                        Console.WriteLine($"You attack the {enemyName} for {playerDamage} damage! The {enemyName} now has {Math.Max(0, enemyHealth)} health remaining.");
+                        int playerDamage = player.CalculateDamage();
+                        enemy.TakeDamage(playerDamage);
+                        Console.WriteLine($"You attack the {enemyName} for {playerDamage} damage!");
+                        if (enemy.Health <= 0)
+                        {
+                            Console.WriteLine($"You have defeated the {enemy.Name}!");
+                            inCombat = false;
+                        }
                         break;
 
                     case "2":
@@ -223,39 +247,37 @@ namespace DungeonExplorer
                 }
                 //The choices allows for the player to pick between using a health potion if they have any or just attacking the enemy 
 
-                if (enemyName.ToLower() == "skeleton")
+                if (inCombat)
                 {
-                    
-                    for (int i = 0; i < 2; i++)
+                    if (enemy.Name.ToLower() == "skeleton")
                     {
-                        int enemyDamage = random.Next(enemyMinAttack, enemyMaxAttack + 1);
-                        player.setHealth(Math.Max(0, player.Health - enemyDamage));
-                        Console.WriteLine($"The {enemyName} attacks you for {enemyDamage} damage! You have {Math.Max(0, player.Health)} health remaining.");
-
+                        for (int i = 0; i < 2; i++)
+                        {
+                            int skeletonDamage = enemy.Attack();
+                            player.TakeDamage(skeletonDamage);
+                        }
                     }
-                }
-                else
-                {
-                    int enemyDamage = random.Next(enemyMinAttack, enemyMaxAttack + 1);
-                    player.setHealth(Math.Max(0, player.Health - enemyDamage));
-                    Console.WriteLine($"The {enemyName} attacks you for {enemyDamage} damage! You have {Math.Max(0, player.Health)} health remaining.");
+                    else
+                    {
+                        int enemyDamage = enemy.Attack();
+                        player.TakeDamage(enemyDamage);
+                    }
+                    //The enemy combat logic. The skeleton can attack twice on their turn, every other enemy can only attack once.
 
-                }
-                //The enemy combat logic. The skeleton can attack twice on their turn, every other enemy can only attack once.
+                    if (player.Health <= 0)
+                    {
+                        Console.WriteLine("You have been defeated! Game over.");
+                        Environment.Exit(0);
+                    }
+                    //This checks if the player has been defeated, if so, the game will end
 
-                if (player.Health <= 0)
-                {
-                    Console.WriteLine("You have been defeated! Game over.");
-                    Environment.Exit(0);
+                    if (enemy.Health <= 0)
+                    {
+                        Console.WriteLine($"You have defeated the {enemy.Name}!");
+                        inCombat = false;
+                    }
+                    //This checks if the enemy has been defeated, if so, the combat will end
                 }
-                //This checks if the player has been defeated, if so, the game will end
-
-                if (enemyHealth <= 0)
-                {
-                    Console.WriteLine($"You have defeated the {enemyName}!");
-                    inCombat = false;
-                }
-                //This checks if the enemy has been defeated, if so, the combat will end
             }
         }
         public bool EndGame()

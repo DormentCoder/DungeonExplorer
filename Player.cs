@@ -3,13 +3,48 @@ using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
-    public class Player
+    public abstract class Entities
     {
-        public string Name { get; private set; }
-        public int Health { get; private set; } 
+        public string Name { get; protected set; }
+        public int Health { get; protected set; }
+        public int MinAttack { get; protected set; }
+        public int MaxAttack { get; protected set; }
+        public abstract void TakeDamage(int damage);
+        public int CalculateDamage()
+        {
+            Random random = new Random();
+            return random.Next(MinAttack, MaxAttack + 1);
+        }
+    }
+    public abstract class Item
+    {
+        public string Name { get; protected set; }
+    }
+    public class Potion : Item
+    {
+        public int HealAmount { get; private set; }
+
+        public Potion(string name, int healAmount)
+        {
+            Name = name;
+            HealAmount = healAmount;
+        }
+    }
+    public class Equipment : Item
+    {
+        public int MinAttackBoost { get; private set; }
+        public int MaxAttackBoost { get; private set; }
+
+        public Equipment(string name, int minAttackBoost, int maxAttackBoost)
+        {
+            Name = name;
+            MinAttackBoost = minAttackBoost;
+            MaxAttackBoost = maxAttackBoost;
+        }
+    }
+    public class Player : Entities
+    {
         private List<string> inventory = new List<string>();
-        public int MinAttack { get; private set; } = 0;
-        public int MaxAttack { get; private set; } = 5;
         public int healthPotionCount = 0;
         public Player(string name, int health)
         {
@@ -34,6 +69,7 @@ namespace DungeonExplorer
         }
         //If the player picks up an item called 'health potions' then the player will receive 3 health potions and this will be added to this counter
 
+        
         public string InventoryContents()
         {
             if (inventory.Count == 0)
@@ -77,6 +113,11 @@ namespace DungeonExplorer
                 MaxAttack = 5;
             }
             //Item logics in regard to what item the player has equipped
+        }
+        public override void TakeDamage(int damage)
+        {
+            Health = Math.Max(0, Health - damage);
+            Console.WriteLine($"{Name} takes {damage} damage! Remaining health: {Health}");
         }
     }
 }
