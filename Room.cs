@@ -5,6 +5,7 @@ namespace DungeonExplorer
     public class Room
     {
         private string description;
+        public bool ItemPickedUp { get; set; } = false;
 
         public Room(string description)
         {

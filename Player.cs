@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
@@ -18,6 +19,12 @@ namespace DungeonExplorer
 
         public void PickUpItem(string item)
         {
+            if (inventory.Contains(item))
+            {
+                // Refuse the action and display a message
+                Console.WriteLine($"You already have {item} in your inventory. You cannot pick it up again.");
+                return;
+            }
             inventory.Add(item);
             if (item.ToLower() == "health potions")
             {

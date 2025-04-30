@@ -43,6 +43,11 @@ namespace DungeonExplorer
                         break;
                     //This option outputs to the user the description of the room they are in, code found in 'Room.cs'
                     case "2":
+                        if (currentRoom.ItemPickedUp)
+                        {
+                            Console.WriteLine("There are no more items left in this room.");
+                            break;
+                        }
                         string[] items = { "armour", "cap", "sword", "axe", "key", "health potions" };
                         string randomItem = items[random.Next(items.Length)];
                         Console.WriteLine($"Looking around the room, you see a {randomItem}. Would you like to pick it up? (y/n)");
@@ -51,6 +56,7 @@ namespace DungeonExplorer
                         {
                             player.PickUpItem(randomItem);
                             Console.WriteLine($"You picked up {randomItem}.");
+                            currentRoom.ItemPickedUp = true;
                         }
                         else
                         {
