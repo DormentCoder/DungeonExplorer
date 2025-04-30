@@ -141,7 +141,7 @@ namespace DungeonExplorer
 
             if (roomCounter == 5)
             {
-                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure..."); 
+                Console.WriteLine("As you wander through these rooms, there is a slight suspicion that theres something up with this dungeon structure..."); // Dialogue for room counter 5
             }
             else if (roomCounter == 10)
             {
